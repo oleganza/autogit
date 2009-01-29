@@ -24,6 +24,25 @@ HOW IT WORKS
   4. Adds a checked out path to the $LOAD_PATH 
      If ./lib subfolder exists, it is used instead (i.e. gem-like load path)
 
+  The library is very simple and could be easily extended whenever you need to. 
+  The following code shows how a list of gems could be organized for different environments:
+
+  sources = %w{
+    git://github.com/
+    git@localhost:github/
+    ~/github/
+  }
+  libs = {
+    "oleganza/declarations" => "f05be8ca8a77",
+    "oleganza/autogit"      => "84b14f0df",
+    "rails/rails"           => "2.2.2",
+    "yrashk/strokedb"       => "0.2.1"
+  }
+
+  libs.each do |path, commit|
+    autogit(sources.map{|s| s + path }, commit)
+  end
+  
 TODO
 
   1. integration tests to cover all interesting cases
