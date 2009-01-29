@@ -21,7 +21,7 @@ HOW IT WORKS
   
   3. Checks out f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a commit inside that repo
   
-  4. Addes the checked out path to $LOAD_PATH 
+  4. Adds a checked out path to the $LOAD_PATH 
      If ./lib subfolder exists, it is used instead (i.e. gem-like load path)
 
 TODO
