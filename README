@@ -11,19 +11,21 @@ HOW IT WORKS
     
     autogit 'git://github.com/oleganza/gem_console.git', 'f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a'
     
-  1. autogit creates a bare repository:
+  1. autogit creates a bare repository (--no-checkout):
   
-    ~/.autogit/github.com/oleganza/gem_console/clone.git
+    ~/.autogit/repositories/github.com-oleganza-gem_console
     
   2. Clones local repository with --shared flag into:
   
-    ~/.autogit/github.com/oleganza/gem_console/checkouts/f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a
+    ~/.autogit/checkouts/github.com-oleganza-gem_console/f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a
   
   3. Checks out f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a commit inside that repo
   
   4. Adds a checked out path to the $LOAD_PATH 
      If ./lib subfolder exists, it is used instead (i.e. gem-like load path)
 
+  To clean cache of checked out revisions: $ rm -rf ~/.autogit/checkouts 
+  
   The library is very simple and could be easily extended whenever you need to. 
   The following code shows how a list of gems could be organized for different environments:
 
@@ -42,6 +44,7 @@ HOW IT WORKS
   libs.each do |path, commit|
     autogit(sources.map{|s| s + path }, commit)
   end
+
   
 TODO
 

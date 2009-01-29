@@ -30,8 +30,7 @@ module AutoGit extend self
   end
   
   def clone_path_for_url(url)
-    dir = File.expand_path(File.join(base_path, pretty_path_for_url(url)))
-    File.join(dir, "clone")
+    File.expand_path(File.join(base_path, "repositories", pretty_path_for_url(url)))
   end
   
   def clone_repo!(url)
@@ -44,10 +43,8 @@ module AutoGit extend self
   def checkout!(repo, commit, try_pull = true)
     _pwd = Dir.pwd
     
-    dir = File.dirname(repo)
-    cdir = File.join(dir, "checkouts")
-    FileUtils.mkdir_p(cdir)
-    cpath = File.join(cdir, commit)
+    cpath = File.expand_path(File.join(base_path, "checkouts", File.basename(repo), commit))
+    FileUtils.mkdir_p(File.dirname(cpath))
     
     unless File.exists?(cpath)
       clone!(repo, cpath, "--shared")
