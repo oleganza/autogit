@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + "/spec_helper"
 
-describe GitDep.method(:pretty_path_for_url) do
+describe AutoGit.method(:pretty_path_for_url) do
   
   def assert(url, result)
-    GitDep.pretty_path_for_url(url).should == result
+    AutoGit.pretty_path_for_url(url).should == result
   end
   
   it "should parse all kinds of valid URLs" do

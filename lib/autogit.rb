@@ -1,12 +1,12 @@
 require 'fileutils'
 
 module Kernel
-  def gitdep(*args,&blk)
-    GitDep.require_git_repo(*args,&blk)
+  def autogit(*args,&blk)
+    AutoGit.require_git_repo(*args,&blk)
   end
 end
 
-module GitDep
+module AutoGit
   
   module StandardDefinition
     def require_git_repo(options)
@@ -32,7 +32,7 @@ module GitDep
   end
   
   def base_path
-    File.expand_path("~/.gitdep")
+    File.expand_path("~/.autogit")
   end
   
   def clone_name(dir)

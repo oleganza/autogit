@@ -1,1 +1,1 @@
-require File.dirname(__FILE__) + "/../lib/gitdep"
+require File.dirname(__FILE__) + "/../lib/autogit"
