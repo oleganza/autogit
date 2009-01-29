@@ -1,7 +1,5 @@
 require File.dirname(__FILE__) + "/../lib/autogit"
 
-AutoGit.app = "myapp"
-
 autogit([
     'git@localhost/declarations.git',
     'git://github.com/oleganza666666/declarations.git',
