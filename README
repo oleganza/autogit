@@ -1,0 +1,42 @@
+gitdep is an easy way to require specific versions of a libraries, stored in git repositories.
+
+EXAMPLE
+
+  gitdep 'git://github.com/oleganza/gem_console.git', 'f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a'
+  gitdep 'git://github.com/wycats/merb.git',          '1.0.7.1'
+  
+HOW IT WORKS
+
+  Suppose we have a following definition:
+    
+    gitdep 'git://github.com/oleganza/gem_console.git', 'f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a'
+    
+  1. GitDep creates a bare repository:
+  
+    ~/.gitdep/github.com/oleganza/gem_console/clone.git
+    
+  2. Clones local repository with --shared flag into:
+  
+    ~/.gitdep/github.com/oleganza/gem_console/checkouts/f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a
+  
+  3. Checks out f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a commit inside that repo
+
+TODO
+
+  1. gitdep :urls => ['a', 'b'] syntax to try different URL 
+     (e.g. on production server you don't have access to github.com, but you might 
+      have a local mirror)
+    
+  2. update bare repositories automatically when checkout failed
+
+NOTES
+
+  1. It is a bad idea to check out branch heads, so i don't even try to implement automatic pull for checkouts.
+  2. gitdep does not have any executable script like "gem install" or "gem update" intentionally. 
+  3. To fix or optimize your repositories, go to ~/.gitdep folder and use standard git tools.
+
+META
+
+  Author:   Oleg Andreev <oleganza@gmail.com>
+  Date:     January 29, 2009
+  License:  WTFPL http://sam.zoy.org/wtfpl/
