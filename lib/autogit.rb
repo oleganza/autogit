@@ -6,29 +6,13 @@ module Kernel
   end
 end
 
-module AutoGit
+module AutoGit extend self
   
-  module StandardDefinition
-    def require_git_repo(options)
-      urls   = options[:urls] || options[:url] && [options[:url]] or raise ":urls option is required!"
-      commit = options[:commit] || options[:tag] || options[:branch] or raise ":commit/:tag/:branch option is required!"
-      
-      path = clone_one_of_repos!(urls)
-      cpath = checkout!(path, commit)
-      set_load_path!(cpath)
-    end
-  end
-  
-  module LazyDefinition
-    def require_git_repo(*args, &blk)
-      first  = args[0]
-      second = args[1]
-      if first.is_a?(String) && second.is_a?(String)
-        super(:urls => [first], :commit => second)
-      else
-        super(*args, &blk)
-      end
-    end
+  def require_git_repo(urls, commit)
+    urls = [urls] if urls.is_a?(String)
+    path = clone_one_of_repos!(urls)
+    cpath = checkout!(path, commit)
+    set_load_path!(cpath)
   end
   
   def base_path
@@ -118,10 +102,6 @@ module AutoGit
         gsub(%r{/},                 "-")
   end
   
-  include StandardDefinition
-  include LazyDefinition
-  
-  extend self
 end
 
 
