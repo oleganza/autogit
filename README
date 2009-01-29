@@ -31,13 +31,16 @@ TODO
       have a local mirror)
     
   2. update bare repositories automatically when checkout failed
-
+  3. flatten a path to repo (for easier maintenance): github.com/oleganza/declarations -> github.com-oleganza-declarations
+  
 NOTES
 
   1. It is a bad idea to check out branch heads, so i don't even try to implement automatic pull for checkouts.
   2. autogit does not have any executable script like "gem install" or "gem update" intentionally. 
   3. To fix or optimize your repositories, go to ~/.autogit folder and use standard git tools.
-
+  4. --quiet flag is not used to inform user when initial cloning or checkout is performed. Second run will not emit any
+     verbose output.
+  
 META
 
   Author:   Oleg Andreev <oleganza@gmail.com>
