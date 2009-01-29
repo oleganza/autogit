@@ -1,4 +1,4 @@
-autogit is an easy way to require specific versions of a libraries, stored in git repositories.
+autogit is an easy way to require specific versions of libraries, stored in git repositories.
 
 EXAMPLE
 
@@ -26,11 +26,15 @@ HOW IT WORKS
 
 TODO
 
-  1. autogit :urls => ['a', 'b'] syntax to try different URL 
+  1. integration tests to cover all interesting cases
+  
+  2. autogit :urls => ['a', 'b'] syntax to try different URL 
      (e.g. on production server you don't have access to github.com, but you might 
       have a local mirror)
-    
-  2. integration tests to cover all cases
+  
+  3. install.rb / setup.rb for installing script into Ruby load path
+  
+  4. port to Io and generate ruby version from Io source.
   
 NOTES
 
