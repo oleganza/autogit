@@ -9,18 +9,20 @@ end
 module AutoGit extend self
   
   def require_git_repo(urls, commit)
-    urls = [urls] if urls.is_a?(String)
-    path = clone_one_of_repos!(urls)
-    cpath = checkout!(path, commit)
-    set_load_path!(cpath)
+    set_load_path!(
+      checkout!(
+        clone_one_of_repos!([urls].flatten), 
+          commit)
+            )
   end
   
+  attr_accessor :base_path
   def base_path
-    (@base_path || ENV['AUTOGIT_BASE_PATH'] || "~/.autogit")
+    @base_path || ENV['AUTOGIT_BASE_PATH'] || "~/.autogit"
   end
   
   def clone_one_of_repos!(urls)
-    path = urls.map{|u| clone_path_for_url(u) }.detect{|p| File.exists?(p)} and return path
+    path = find_existing_clone(urls) and return path
     url = urls.shift
     begin
       clone_repo!(url)
@@ -48,19 +50,15 @@ module AutoGit extend self
     
     unless File.exists?(cpath)
       clone!(repo, cpath, "--shared")
-          
       Dir.chdir(cpath)
       unless system("git checkout #{commit}")
         FileUtils.rm_rf(cpath)
         # pull bare repo, try to checkout again
-        if try_pull
-          $stderr.puts "Failed to checkout #{commit}: trying to fetch updates for #{repo}..."
-          Dir.chdir(repo)
-          system("git fetch") or raise(FetchError, "Git fetch inside #{repo} failed!")
-          cpath = checkout!(repo, commit, false)
-        else
-          raise CheckoutError, "Git checkout #{repo} -> #{commit} failed!"
-        end
+        try_pull or raise(Error, "Git checkout #{repo} -> #{commit} failed!")
+        $stderr.puts "Failed to checkout #{commit}: trying to fetch updates for #{repo}..."
+        Dir.chdir(repo)
+        system("git fetch") or raise(Error, "Git fetch inside #{repo} failed!")
+        cpath = checkout!(repo, commit, false)
       end
     end
     
@@ -83,16 +81,17 @@ module AutoGit extend self
     end
   end
   
-  def pretty_path_for_url(url)
-    url.gsub(%r{(\.git)?/*$},       "").
-        gsub(%r{^/},                "blah:///localhost/").
-        gsub(%r{^file:/+},          "blah:///localhost/").
-        gsub(%r{^\w+:/+},           "").
-        gsub(%r{:},                 ".").
-        gsub(%r{/},                 "-")
+  def find_existing_clone(urls)
+    urls.map{|u| clone_path_for_url(u) }.detect{|p| File.exists?(p)}
   end
   
-  class CloneError < StandardError; end
-  class FetchError < StandardError; end
-  class CheckoutError < StandardError; end
+  def pretty_path_for_url(url)
+    url.gsub(%r{(\.git)?/*$},       "").
+        gsub(%r{^(file:)?/+},       "blah:///localhost/").
+        gsub(%r{^\w+:/+},           "").
+        gsub(%r{[:/]},              "-")
+  end
+  
+  class Error < StandardError; end
+  class CloneError < Error; end
 end
