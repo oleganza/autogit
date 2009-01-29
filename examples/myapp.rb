@@ -5,8 +5,5 @@ autogit :urls   => ['git://github.com/oleganza/declarations.git'],
      
 autogit 'git://github.com/oleganza/gem_console.git', 'master'
 
-autogit 'git://github.com/wycats/merb.git',          '1.0.7.1'
-
 require 'declarations'
 require 'gem_console'
-require 'merb/lib/merb'
