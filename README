@@ -45,16 +45,8 @@ HOW IT WORKS
   
 TODO
 
-  1. integration tests to cover all interesting cases
-  
-  2. autogit :urls => ['a', 'b'] syntax to try different URL 
-     (e.g. on production server you don't have access to github.com, but you might 
-      have a local mirror)
-  
-  3. install.rb / setup.rb for installing script into Ruby load path
-  
-  4. port to Io and generate ruby version from Io source.
-  
+  integration tests to cover all interesting cases
+    
 NOTES
 
   1. It is a bad idea to check out branch heads, so i don't even try to implement automatic pull for checkouts.

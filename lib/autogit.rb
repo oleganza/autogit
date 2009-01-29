@@ -15,10 +15,15 @@ module AutoGit extend self
     set_load_path!(cpath)
   end
   
-  def base_path
-    "~/.autogit"
+  attr_accessor :app
+  def app
+    @app || ENV['AUTOGIT_APP'] || "default"
   end
   
+  def base_path
+    (@base_path || ENV['AUTOGIT_BASE_PATH'] || "~/.autogit") + "/#{app}"
+  end
+    
   def clone_name(dir)
     "clone.git"
   end
@@ -28,19 +33,23 @@ module AutoGit extend self
   end
   
   def clone_one_of_repos!(urls)
-    # TODO: try other repos before giving up
-    clone_repo!(urls.first)
+    base_url = urls.first
+    begin 
+      clone_repo!(urls.shift, base_url)
+    rescue CloneError
+      raise if urls.empty?
+      retry
+    end
   end
   
-  def clone_repo!(url)
-    url or raise "Cannot clone: no url given!"
-    dir = File.expand_path(File.join(base_path, pretty_path_for_url(url)))
+  def clone_repo!(url, base_url = url)
+    dir = File.expand_path(File.join(base_path, pretty_path_for_url(base_url)))
     clone_path = File.join(dir, clone_name(dir))
     FileUtils.mkdir_p(dir)
     unless File.exists?(clone_path)
       unless system("git clone #{url} #{clone_path} --no-checkout")
         FileUtils.rm_rf(clone_path)
-        raise "Git clone #{url} -> #{clone_path} failed!"
+        raise CloneError, "Git clone #{url} -> #{clone_path} failed!"
       end
     end
     clone_path
@@ -57,7 +66,7 @@ module AutoGit extend self
     unless File.exists?(cpath)
       unless system("git clone #{repo} #{cpath} --shared")
         FileUtils.rm_rf(cpath)
-        raise "Git clone #{repo} -> #{cpath} failed!"
+        raise CloneError, "Git clone #{repo} -> #{cpath} failed!"
       end
     
       Dir.chdir(cpath)
@@ -70,13 +79,13 @@ module AutoGit extend self
           Dir.chdir(repo)
           
           unless system("git fetch")
-            raise "Git fetch inside #{repo} failed!"
+            raise FetchError, "Git fetch inside #{repo} failed!"
           end
           
           cpath = checkout!(repo, commit, false)
           $stderr.puts "Fetched #{commit}."
         else
-          raise "Git checkout #{repo} -> #{commit} failed!"
+          raise CheckoutError, "Git checkout #{repo} -> #{commit} failed!"
         end
       end
     end
@@ -102,6 +111,9 @@ module AutoGit extend self
         gsub(%r{/},                 "-")
   end
   
+  class CloneError < StandardError; end
+  class FetchError < StandardError; end
+  class CheckoutError < StandardError; end
 end
 
 
