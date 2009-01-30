@@ -20,7 +20,7 @@ EXAMPLE
 
 HOW IT WORKS
 
-  Suppose we have a following definition:
+  Suppose we have the following definition:
     
     autogit 'git://github.com/oleganza/gem_console.git', 'f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a'
     
@@ -37,7 +37,7 @@ HOW IT WORKS
   4. Adds a checked out path to the $LOAD_PATH 
      If ./lib subfolder exists, it is used instead (i.e. gem-like load path)
 
-  To clean cache of checked out revisions: $ rm -rf ~/.autogit/checkouts 
+  To clean a cache of checked out revisions: $ rm -rf ~/.autogit/checkouts 
   
   The library is very simple and could be easily extended whenever you need to. 
   The following code shows how a list of gems could be organized for different environments:
