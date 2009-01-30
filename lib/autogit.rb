@@ -9,9 +9,11 @@ end
 module AutoGit extend self
   
   def require_git_repo(urls, commit)
+    urls = filter_urls(rewrite_rules, [urls].flatten)
+    return if urls.empty?
     set_load_path!(
       checkout!(
-        clone_one_of_repos!([urls].flatten), 
+        clone_one_of_repos!(urls), 
           commit)
             )
   end
@@ -90,6 +92,29 @@ module AutoGit extend self
         gsub(%r{^(file:)?/+},       "blah:///localhost/").
         gsub(%r{^\w+:/+},           "").
         gsub(%r{[:/]},              "-")
+  end
+  
+  def rewrite_rules
+    @rewrite_rules ||= []
+  end
+  
+  def rewrite(regexp, value = nil, &blk)
+    rewrite_rules.unshift(RewriteRule.new(regexp, blk || proc{|*_| value }))
+  end
+  
+  def filter_urls(rules, urls)
+    rules.inject(urls) do |list, rule|
+      list.inject([]) do |tail, url| 
+        tail + [rule.call(url)].flatten.compact
+      end
+    end
+  end
+  
+  class RewriteRule < Struct.new(:regexp, :block)
+    def call(url) # maps 1 url to 0..n urls (may return string or nil)
+      match = url.match(regexp)
+      match ? block.call(url, *match.captures) : url
+    end
   end
   
   class Error < StandardError; end

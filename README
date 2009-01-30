@@ -61,7 +61,6 @@ HOW IT WORKS
   
 TODO
 
-  - rethink design to safely use AutoGit inside libraries
   - rewrite rules for sources (to manage libraries hints): AutoGit.rewrite(%r{github.com[:/]([^/]+)/([^/]+)}i){|url, login, repo| [url]  }
   - integration tests to cover all interesting cases
     
