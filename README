@@ -1,5 +1,5 @@
 AutoGit is an easy way to require specific versions of libraries, stored in git repositories.
-Basically, AutoGit is a smart and yet simple alternative for RubyGems. Any git-tracked gem can be required using autogit(url, commmitish) instead of gem(name, version).
+Basically, AutoGit is a smart and yet simple alternative to RubyGems. Any git-tracked gem can be required using autogit(url, commmitish) instead of gem(name, version).
 
 EXAMPLE
 
@@ -66,7 +66,7 @@ TODO
 NOTES
 
   1. It is a bad idea to check out branch heads, so i don't even try to implement automatic pull for checkouts.
-  2. autogit does not have any executable script like "gem install" or "gem update" intentionally. 
+  2. There is no executable script like "gem install" or "gem update". AutoGit is, huh, "auto". 
   3. To fix or optimize your repositories, go to ~/.autogit folder and use standard git tools.
   4. --quiet flag is not used to inform user when initial cloning or checkout is performed. Second run will not emit any
      verbose output.
