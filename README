@@ -61,7 +61,9 @@ HOW IT WORKS
   
 TODO
 
-  integration tests to cover all interesting cases
+  - rethink design to safely use AutoGit inside libraries
+  - rewrite rules for sources (to manage libraries hints): AutoGit.rewrite(%r{github.com[:/]([^/]+)/([^/]+)}i){|url, login, repo| [url]  }
+  - integration tests to cover all interesting cases
     
 NOTES
 
@@ -70,6 +72,15 @@ NOTES
   3. To fix or optimize your repositories, go to ~/.autogit folder and use standard git tools.
   4. --quiet flag is not used to inform user when initial cloning or checkout is performed. Second run will not emit any
      verbose output.
+  5. Currently, AutoGit is not that great to use in a library. 
+     Here's a good description why $LOAD_PATH management is not a concern of library:
+     http://gist.github.com/54177
+     
+     Current implemenation makes end-application to define all the sources for required libraries and their dependencies.
+     Imagine you require library "xyz" and you suddenly need to define sources for libraries "foo", "bar" and "buz" which you don't care about.
+     We can fix this by providing hints in libraries source code to be used by AutoGit when it is present.
+     This must be backwards-compatible with regular gems:     
+       autogit(url, version) if defined?(AutoGit)
   
 META
 
