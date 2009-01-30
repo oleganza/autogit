@@ -1,6 +1,7 @@
 require 'fileutils'
 
 module Kernel
+  # Global shortcut to AutoGit.require_git_repo
   def autogit(*args,&blk)
     AutoGit.require_git_repo(*args,&blk)
   end
@@ -8,8 +9,19 @@ end
 
 module AutoGit extend self
   
+  # Clone a repository, checkout specific commit and add it to the $LOAD_PATH
+  # * urls can be a list of URLs or a single URL. 
+  # * for list of URLs, AutoGit tries to clone the first accessible URL.
+  # * commit is a valid git commitish (that is: commit, tag or a branch name)
+  # * method does nothing if the list of URLs is empty (or nil)
+  # * method returns path to checked out commit (path is appended to $LOAD_PATH)
+  # 
+  # Examples:
+  #   autogit "git://github.com/oleganza/autogit.git", "c8f549fea063eacd"
+  #   autogit [github, myserver, localfolder], "1.0"
+  #
   def require_git_repo(urls, commit)
-    urls = filter_urls(rewrite_rules, [urls].flatten)
+    urls = filter_urls(rewrite_rules, [urls].flatten.compact)
     return if urls.empty?
     set_load_path!(
       checkout!(
@@ -18,10 +30,35 @@ module AutoGit extend self
             )
   end
   
+  # Define a rewrite rule for source URL. 
+  # * Block can return nil to throw URL from the list, single URL or a list of URLs.
+  # * You can specify any number of rules to reject or redirect particular URLs.
+  # * Rules are applied in reverse order (so you have complete control on what URLs dependency uses)
+  # 
+  # Example: 
+  #   # Add local mirror for github urls:
+  #   AutoGit.rewrite(%r{git://github.com/([^/]+)/([^/]+)}) do |url, user, project|
+  #     [url, "/var/github-mirror/#{user}-#{project}"]
+  #   end
+  #
+  #   # Reject bad URL:
+  #   AutoGit.rewrite(%r{badurl}, nil)
+  #
+  def rewrite(regexp, value = nil, &blk)
+    rewrite_rules.unshift(RewriteRule.new(regexp, blk || proc{|*_| value }))
+  end
+  
+  # Specify base folder for storing cloned repositories.
+  # You can override default value (~/.autogit) using AUTOGIT_BASE_PATH environment variable or
+  # accessor: AutoGit.base_path = "/some/path"
   attr_accessor :base_path
   def base_path
     @base_path || ENV['AUTOGIT_BASE_PATH'] || "~/.autogit"
   end
+  
+  # 
+  # Private API
+  #
   
   def clone_one_of_repos!(urls)
     path = find_existing_clone(urls) and return path
@@ -93,13 +130,9 @@ module AutoGit extend self
         gsub(%r{^\w+:/+},           "").
         gsub(%r{[:/]},              "-")
   end
-  
+    
   def rewrite_rules
     @rewrite_rules ||= []
-  end
-  
-  def rewrite(regexp, value = nil, &blk)
-    rewrite_rules.unshift(RewriteRule.new(regexp, blk || proc{|*_| value }))
   end
   
   def filter_urls(rules, urls)
@@ -107,7 +140,7 @@ module AutoGit extend self
       list.inject([]) do |tail, url| 
         tail + [rule.call(url)].flatten.compact
       end
-    end
+    end.uniq
   end
   
   class RewriteRule < Struct.new(:regexp, :block)
