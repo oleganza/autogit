@@ -1,5 +1,5 @@
 AutoGit is an easy way to require specific versions of libraries, stored in git repositories.
-Basically, AutoGit is a smart and yet simple alternative for RubyGems. Whatever gem is accessible on a git server could be required using autogit(url, commmitish) instead of gem(name, version).
+Basically, AutoGit is a smart and yet simple alternative for RubyGems. Any git-tracked gem can be required using autogit(url, commmitish) instead of gem(name, version).
 
 EXAMPLE
 
