@@ -1,11 +1,22 @@
-autogit is an easy way to require specific versions of libraries, stored in git repositories.
+AutoGit is an easy way to require specific versions of libraries, stored in git repositories.
+Basically, AutoGit is a smart and yet simple alternative for RubyGems. Whatever gem is accessible on a git server could be required using autogit(url, commmitish) instead of gem(name, version).
 
 EXAMPLE
 
-  autogit 'git://github.com/oleganza/gem_console.git', 'f2c55bd10cd9cae14e5bf7bde523ac3a7b66561a'
-  require 'gem_console'
-  autogit 'git://github.com/wycats/merb.git',          '1.0.7.1'
-  require 'merb/lib/merb'
+  Instead of:
+
+    system("sudo gem install oleganza-gem_console")
+    gem "oleganza-gem_console", "0.1"
+    require "gem_console"
+
+  you write: 
+
+    autogit 'git://github.com/oleganza/gem_console.git', '0.1'
+    require "gem_console"
+
+  You can also specify any valid git commitish in place of version (e.g. "f2c55bd10cd9ca")
+  Branch names are valid too, but don't expect AutoGit to update your branch heads automatically.
+  After all, it is a bad practice to specify a branch head (i.e. unknown version) 
 
 HOW IT WORKS
 
