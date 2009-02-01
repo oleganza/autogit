@@ -61,10 +61,11 @@ HOW IT WORKS
 HOW TO USE AUTOGIT IN A LIBRARY (GEM)
 
   1. Put all specifications into if defined?(AutoGit)...end block.
-     This is crucial to let other use your library without AutoGit (e.g. as a rubygem)
-  2. Application may specify rewrite rules (AutoGit.rewrite) to modify 
-  
-  
+     This is crucial to let folks use your library without AutoGit (e.g. as a rubygem)
+  2. Application may specify rewrite rules (AutoGit.rewrite) to modify URLs: remove,
+     rewrite or append a mirror.
+     (see comments in source code and examples/*.rb)
+
 TODO
 
   - integration tests to cover all interesting cases
